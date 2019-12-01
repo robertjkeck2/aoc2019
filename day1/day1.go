@@ -12,7 +12,11 @@ func main() {
 	filename := "mass.txt"
 	masses := loadMasses(filename)
 	for _, mass := range masses {
-		totalFuel += calculateFuel(mass)
+		fuel := calculateFuel(mass)
+		for fuel > 0 {
+			totalFuel += fuel
+			fuel = calculateFuel(fuel)
+		}
 	}
 	fmt.Println(totalFuel)
 }
