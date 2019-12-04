@@ -20,7 +20,7 @@ func main() {
 	intersections := findIntersections(points1, points2)
 	fewestSteps := findMinStepIntersection(intersections)
 	fmt.Println(fewestSteps)
-	fmt.Println(calculateManhattanDist(fewestSteps))
+	fmt.Println(calculateMinSteps(fewestSteps))
 }
 
 func loadWirePaths(filename string) (wire1, wire2 []string) {
@@ -47,48 +47,51 @@ func drawPath(wire []string) (points []pathPoint) {
 		switch direction {
 		case "U":
 			for i := 0; i < int(count); i++ {
-				steps++
 				points = append(points, pathPoint{x, y, steps})
 				y++
+				steps++
 			}
 		case "D":
 			for i := 0; i < int(count); i++ {
-				steps++
 				points = append(points, pathPoint{x, y, steps})
 				y--
+				steps++
 			}
 		case "L":
 			for i := 0; i < int(count); i++ {
-				steps++
 				points = append(points, pathPoint{x, y, steps})
 				x--
+				steps++
 			}
 		case "R":
 			for i := 0; i < int(count); i++ {
-				steps++
 				points = append(points, pathPoint{x, y, steps})
 				x++
+				steps++
 			}
 		}
 	}
 	return points
 }
 
-func findIntersections(points1, points2 []pathPoint) (intersections []pathPoint) {
+func findIntersections(points1, points2 []pathPoint) (intersections [][]pathPoint) {
 	for _, point1 := range points1 {
 		for _, point2 := range points2 {
-			if point1 == point2 {
-				intersections = append(intersections, point1)
+			match := []pathPoint{}
+			if point1.X == point2.X && point1.Y == point2.Y {
+				match = append(match, point1)
+				match = append(match, point2)
+				intersections = append(intersections, match)
 			}
 		}
 	}
 	return intersections
 }
 
-func findClosestIntersection(intersections []pathPoint) (closestIntersection pathPoint) {
+func findClosestIntersection(intersections [][]pathPoint) (closestIntersection pathPoint) {
 	minPath := pathPoint{}
 	minDist := 10000
-	for i, path := range intersections {
+	for i, path := range intersections[0] {
 		if i != 0 {
 			manhattanDist := calculateManhattanDist(path)
 			if manhattanDist < minDist {
@@ -100,15 +103,15 @@ func findClosestIntersection(intersections []pathPoint) (closestIntersection pat
 	return minPath
 }
 
-func findMinStepIntersection(intersections []pathPoint) (fewestSteps pathPoint) {
-	minPath := pathPoint{}
-	minDist := 10000
+func findMinStepIntersection(intersections [][]pathPoint) (fewestSteps []pathPoint) {
+	minPath := []pathPoint{}
+	minSteps := 100000
 	for i, path := range intersections {
 		if i != 0 {
-			manhattanDist := calculateManhattanDist(path)
-			if manhattanDist < minDist {
+			steps := calculateMinSteps(path)
+			if steps < minSteps {
 				minPath = path
-				minDist = manhattanDist
+				minSteps = steps
 			}
 		}
 	}
@@ -118,4 +121,9 @@ func findMinStepIntersection(intersections []pathPoint) (fewestSteps pathPoint) 
 func calculateManhattanDist(path pathPoint) (dist int) {
 	dist = int(math.Abs(float64(path.X)) + math.Abs(float64(path.Y)))
 	return dist
+}
+
+func calculateMinSteps(path []pathPoint) (steps int) {
+	steps = path[0].steps + path[1].steps
+	return steps
 }
