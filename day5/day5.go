@@ -41,7 +41,8 @@ func loadOpcodes(filename string) (opcodes []int64) {
 func parseOpcode(opcodes []int64, i int) (op int64, params []param) {
 	opcode := opcodes[i]
 	if opcode == 99 {
-		return
+		op = 99
+		return op, params
 	}
 	opcodeStr := strconv.Itoa(int(opcode))
 	op = int64(opcodeStr[len(opcodeStr)-1]) - 48
@@ -58,7 +59,6 @@ func parseOpcode(opcodes []int64, i int) (op int64, params []param) {
 			mode := int64(opcodeStr[j+modeOffset]) - 48
 			params = append(params, param{key, opcodes[int64(i)+key], int64(mode)})
 		}
-
 	} else {
 		if op < 3 || op > 4 {
 			params = append(params, param{3, opcodes[i+3], 0})
