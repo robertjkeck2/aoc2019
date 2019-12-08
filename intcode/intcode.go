@@ -9,9 +9,9 @@ import (
 
 // Run takes Intcode instructions via a CSV file and output the result
 // Credit to /u/idolstar/ on reddit for the intcode emulator
-func Run(filename string) (output []int64) {
+func Run(filename string, input []int64) (output []int64) {
 	originalOpcodes := loadOpcodes(filename)
-	runIntcodeInstructions(originalOpcodes, []int64{5}, &output)
+	runIntcodeInstructions(originalOpcodes, input, &output)
 	return output
 }
 
