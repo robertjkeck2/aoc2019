@@ -8,7 +8,7 @@ import (
 
 func main() {
 	filename := "opcodes.csv"
-	allowedPhases := []int64{0, 1, 2, 3, 4}
+	allowedPhases := []int64{5, 6, 7, 8, 9}
 	maxSignal := findMaxSignal(filename, allowedPhases)
 	fmt.Println(maxSignal)
 }
